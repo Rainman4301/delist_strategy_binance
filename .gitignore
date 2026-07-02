@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+
+# secrets — never commit these
+.env
+API_PUB.txt
+API_PRI.txt
+
+# generated data
+klines/
+data/new_announcements.csv
+data/old_announcements.csv

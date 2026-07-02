@@ -1,42 +1,33 @@
-# 🪙 Binance Delist Strategy
+# Binance Delisting Strategy
 
-## 📘 Project Overview
-When Binance announces the delisting of coins or tokens, affected assets tend to rapidly drop in price. This project automates the detection of such announcements and initiates trades to capitalize on these movements, with built-in risk management.
+An automated pipeline that detects Binance delisting announcements and opens risk-managed short positions on the affected pairs, capturing the price drop that typically follows a delisting notice.
 
----
+## How it works
 
-## 🎯 Purpose
-The goal is to detect delisting announcements early, track the asset’s price movement, and execute trades using stop-loss and take-profit logic to maximize profit and minimize risk.
+1. **Announcement Crawler** (`src/announcement_crawler.py`) — scrapes Binance's delisting board with Selenium, extracts the affected trading pairs, and diffs them against previously-seen announcements so only new events trigger a trade.
+2. **Margin Trader** (`src/margin_trader.py`) — sizes each position from available USDT balance, opens an isolated-margin short via the Binance API, and applies stop-loss / take-profit rules based on the pair's price action right after the announcement.
 
----
+```
+Announcement detected → price checked against last close → short opened → SL/TP managed
+```
 
-## ⚙️ Workflow
+## Tech stack
 
-1. **Announcement Monitoring**  
-   The system scrapes Binance's announcement board to detect delisting notices.
+`Python` · `python-binance` · `Selenium` · `BeautifulSoup` · `pandas`
 
-2. **Real-time Price Tracking**  
-   Prices are monitored to identify significant drops after delisting announcements.
+## Setup
 
-3. **Trade Execution**  
-   Once conditions are met, the bot places buy orders with stop-loss and take-profit controls.
+```bash
+pip install -r requirements.txt
+cp .env.example .env   # add your Binance API key/secret
+python src/announcement_crawler.py
+python src/margin_trader.py
+```
 
----
+## Project status
 
-## 🛠 Features
+Entry logic and risk sizing are implemented and tested against historical announcement data. Exit-side stop-loss/take-profit monitoring is in progress — see `TODO`s in `margin_trader.py`.
 
-- 🔍 Auto-monitoring of delisting announcements
-- 📉 Real-time price analysis
-- 🤖 Automated trade execution
-- 🛡 Risk management with SL/TP
+## Disclaimer
 
----
-
-## 🧰 Prerequisites
-
-- Python 3.x  
-- Binance API  
-- Trading libraries (e.g., `ccxt`, `python-binance`)  
-- Binance API key & secret
-
----
+Built for research and learning purposes. Not financial advice; use at your own risk.
